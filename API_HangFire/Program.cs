@@ -1,4 +1,5 @@
 using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,10 +7,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 var configuration = builder.Configuration;
+var connectionString = configuration.GetConnectionString("HangfireConnection");
 
-builder.Services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("HangfireConnection")));
+builder.Services.AddHangfire(x => x.UsePostgreSqlStorage(configuration.GetConnectionString("HangfireConnection")));
+
+//builder.Services.AddHangfireServer();
 
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api Saudacao", Description = "Treinamento utiização Hangfire" });
